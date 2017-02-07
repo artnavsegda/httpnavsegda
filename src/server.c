@@ -9,6 +9,8 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include "filesize.h"
+#include "drop.h"
 
 char * getmime(char * filename)
 {
@@ -39,31 +41,6 @@ char * response(int code)
                 break;
         }
         return "HTTP/1.1 200 OK";
-}
-
-void drop(int dropstatus, char *dropdesc)
-{
-        if (dropstatus == -1)
-        {
-                perror(dropdesc);
-                exit(1);
-        }
-}
-
-long long filesize(int fd)
-{
-	struct stat filestat;
-	drop(fstat(fd,&filestat),"file status error");
-	return filestat.st_size;
-}
-
-void drop2(char *dropstatus, char *dropdesc)
-{
-        if (dropstatus == NULL)
-        {
-                perror(dropdesc);
-                exit(1);
-        }
 }
 
 int main(void)

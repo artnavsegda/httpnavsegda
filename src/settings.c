@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include "filesize.h"
 
 #define MAXOPT 1000
 
@@ -38,31 +39,6 @@ void setopt(struct settings *myset, char *parameter, char *newset)
                 strcpy(newset,myset->values[myset->optisize]);
 		myset->optisize++;
 	}
-}
-
-void drop(int dropstatus, char *dropdesc)
-{
-        if (dropstatus == -1)
-        {
-                perror(dropdesc);
-                exit(1);
-        }
-}
-
-void drop2(char *dropstatus, char *dropdesc)
-{
-        if (dropstatus == NULL)
-        {
-                perror(dropdesc);
-                exit(1);
-        }
-}
-
-long long filesize(int fd)
-{
-	struct stat filestat;
-	drop(fstat(fd,&filestat),"file status error");
-	return filestat.st_size;
 }
 
 void feedopt(char *str)
@@ -116,4 +92,3 @@ void formdecode(char *formdata)
         for (i=0;i<amount;i++)
                 evalueateopt(dispatch[i]);
 }
-
