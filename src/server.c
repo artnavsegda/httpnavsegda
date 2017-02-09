@@ -13,6 +13,8 @@
 #include "filesize.h"
 #include "drop.h"
 
+#define WWWROOT "/Users/artnavsegda/GitHub/htmlnavsegda"
+
 char * getmime(char * filename)
 {
         if (strcmp(strchr(filename,'.'),".html")==0)
@@ -46,7 +48,8 @@ char * response(int code)
 
 int main(void)
 {
-        int nchar;
+        chdir(WWWROOT);
+        int nchar = 0;
 	char *httpMimeType, *data;
 	int code, webpage = -1;
         //char buf[10000];
@@ -65,8 +68,8 @@ int main(void)
         {
                 int msgsock = accept(sock,NULL,NULL);
                 drop(msgsock,"accept error");
-                ioctl(msgsock,FIONREAD,&nchar);
-                printf("%d\n", nchar);
+                while (nchar == 0)
+                        ioctl(msgsock,FIONREAD,&nchar);
                 char *buf = malloc(nchar+1);
                 int numread = recv(msgsock,buf,nchar,0);
                 drop(numread,"recv error");
