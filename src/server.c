@@ -75,7 +75,7 @@ int main(void)
                 drop(numread,"recv error");
                 buf[numread] = '\0';
                 char *method = strtok(buf," ");
-                char *page = strtok(NULL," ");
+                char *page = strtok(NULL," ?");
                 char *buf2 = strtok(NULL,"");
                 if (strcmp(page,"/") == 0)
                         page = "/index.html";
