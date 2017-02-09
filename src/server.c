@@ -9,6 +9,7 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include "filesize.h"
 #include "drop.h"
 
@@ -45,9 +46,10 @@ char * response(int code)
 
 int main(void)
 {
+        int nchar;
 	char *httpMimeType, *data;
 	int code, webpage = -1;
-        char buf[10000];
+        //char buf[10000];
         int sock = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
         drop(sock,"socket error");
         int reuseaddr = 1;
@@ -63,7 +65,10 @@ int main(void)
         {
                 int msgsock = accept(sock,NULL,NULL);
                 drop(msgsock,"accept error");
-                int numread = recv(msgsock,buf,10000,0);
+                ioctl(msgsock,FIONREAD,&nchar);
+                printf("%d\n", nchar);
+                char *buf = malloc(nchar+1);
+                int numread = recv(msgsock,buf,nchar,0);
                 drop(numread,"recv error");
                 buf[numread] = '\0';
                 char *method = strtok(buf," ");
@@ -113,6 +118,7 @@ int main(void)
                 drop(send(msgsock,response(code),strlen(response(code)),0),"send response error");
                 drop(send(msgsock,httpMimeType,strlen(httpMimeType),0),"send mime type error");
                 drop(send(msgsock,data,strlen(data),0),"send webpage error");
+                free(buf);
 		if (webpage != -1)
                 {
                 	free(data);
