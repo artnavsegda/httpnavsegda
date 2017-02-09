@@ -108,7 +108,7 @@ int main(void)
                                 code = 200;
                                 data = malloc(filesize(webpage)+1);
                                 drop2(data,"out of memory");
-                                numread = read(webpage,data,filesize(webpage)+1);
+                                numread = read(webpage,data,filesize(webpage));
                                 drop(numread,"read error");
                                 data[numread] = '\0';
                                 close(webpage);
