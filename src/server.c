@@ -18,15 +18,15 @@
 char * getmime(char * filename)
 {
         if (strcmp(strchr(filename,'.'),".html")==0)
-                return "\nContent-type: text/html\n\n";
+                return "\r\nContent-type: text/html\r\n\r\n";
         else if (strcmp(strchr(filename,'.'),".js")==0)
-                return "\nContent-type: application/javascript\n\n";
+                return "\r\nContent-type: application/javascript\r\n\r\n";
         else if (strcmp(strchr(filename,'.'),".txt")==0)
-                return "\nContent-type: text/plain\n\n";
+                return "\r\nContent-type: text/plain\r\n\r\n";
         else if (strcmp(strchr(filename,'.'),".css")==0)
-                return "\nContent-type: text/CSS\n\n";
+                return "\r\nContent-type: text/CSS\r\n\r\n";
         else
-                return "\nContent-type: text/plain\n\n";
+                return "\r\nContent-type: text/plain\r\n\r\n";
 }
 
 char * response(int code)
@@ -70,10 +70,14 @@ int main(void)
                 drop(msgsock,"accept error");
                 while (nchar == 0)
                         ioctl(msgsock,FIONREAD,&nchar);
+		printf(">>>>>> %d\n", nchar);
                 char *buf = malloc(nchar+1);
                 int numread = recv(msgsock,buf,nchar,0);
                 drop(numread,"recv error");
                 buf[numread] = '\0';
+
+                puts(buf);
+
                 char *method = strtok(buf," ");
                 char *page = strtok(NULL," ?");
                 char *buf2 = strtok(NULL,"");
@@ -85,16 +89,11 @@ int main(void)
                         data = "<!doctype html><html><head><title>Special page</title></head><body><p>you're special</p></body></html>";
                         httpMimeType = getmime(".html");
                 }
-                else if (strcmp(page,"/getopt") == 0)
+                else if (strcmp(page,"/getdata") == 0)
                 {
                         code = 200;
-                        data = strstr(buf2,"\r\n\r\n")+4;
-                        httpMimeType = getmime(".txt");
-                }
-                else if (strcmp(page,"/setopt") == 0)
-                {
-                        code = 200;
-                        data = strstr(buf2,"\r\n\r\n")+4;
+                        //data = strstr(buf2,"\r\n\r\n")+4;
+                        data = "something";
                         httpMimeType = getmime(".txt");
                 }
                 else
