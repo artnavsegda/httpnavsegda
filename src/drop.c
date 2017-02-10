@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "drop.h"
 
 void drop(int dropstatus, char *dropdesc)

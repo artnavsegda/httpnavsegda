@@ -1,4 +1,5 @@
 #include <sys/stat.h>
+#include "drop.h"
 
 long long filesize(int fd)
 {
