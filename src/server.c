@@ -15,6 +15,33 @@
 
 #define WWWROOT "/Users/artnavsegda/GitHub/jsnavsegda"
 
+#define MAXOPT 1000
+
+struct httpreqstruct {
+        char * method;
+        char * filename;
+        char * httpversion;
+        int nheader;
+        char *headopt[MAXOPT];
+};
+
+struct httpreqstruct * parsereq(char * request)
+{
+        static struct httpreqstruct httpreq = { .nheader = 0 };
+        httpreq.method = strtok(buf," ");
+        httpreq.filename = strtok(NULL," ");
+        httpreq.httpversion = strtok(NULL,"\r\n");
+        char * tmpheader;
+        while (1) {
+                tmpheader = strtok(NULL,"\r\n");
+                if (tmpheader == NULL)
+                        break;
+                httpreq.headopt[httpreq.nheader] = tmpheader;
+                httpreq.nheader++;
+        }
+        return &httpreq;
+}
+
 char * getmime(char * filename)
 {
         if (strcmp(strchr(filename,'.'),".html")==0)
@@ -93,8 +120,9 @@ int main(void)
                 else if (strcmp(page,"/getdata") == 0)
                 {
                         code = 200;
+                        data = buf2;
                         //data = strstr(buf2,"\r\n\r\n")+4;
-                        data = "something";
+                        //data = "something";
                         httpMimeType = getmime(".txt");
                 }
                 else
