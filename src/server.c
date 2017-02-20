@@ -17,7 +17,7 @@
 
 #define MAXOPT 1000
 
-struct httpreqstruct {
+/*struct httpreqstruct {
         char * method;
         char * filename;
         char * httpversion;
@@ -40,7 +40,7 @@ struct httpreqstruct * parsereq(char * request)
                 httpreq.nheader++;
         }
         return &httpreq;
-}
+}*/
 
 char * getmime(char * filename)
 {
@@ -120,9 +120,9 @@ int main(void)
                 else if (strcmp(page,"/getdata") == 0)
                 {
                         code = 200;
-                        data = buf2;
+                        //data = buf2;
                         //data = strstr(buf2,"\r\n\r\n")+4;
-                        //data = "something";
+                        data = "something";
                         httpMimeType = getmime(".txt");
                 }
                 else
@@ -147,6 +147,7 @@ int main(void)
                         }
                 }
                 drop(send(msgsock,response(code),strlen(response(code)),0),"send response error");
+                drop(send(msgsock,"\r\nAccess-Control-Allow-Origin: *",32,0),"send options error");
                 drop(send(msgsock,httpMimeType,strlen(httpMimeType),0),"send mime type error");
                 drop(send(msgsock,data,strlen(data),0),"send webpage error");
                 //free(buf);
